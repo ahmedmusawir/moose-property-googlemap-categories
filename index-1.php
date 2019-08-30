@@ -21,20 +21,17 @@ if ( !function_exists( 'add_action' ) ) {
 
 /**
  *
- * Getting Select Options for Property Types
+ * Getting Select Options
  *
  */
 $selected = '';
 
-function get_category_options($select) {
+function get_options($select) {
 
 	$categories = array(  
-					'Choose A Property Type' => '',
-					'Retail' => 'retail',
-					'Office' => 'office',
-					'Land' => 'land',
-					'Industrial' => 'industrial',
-					'Development' => 'development',
+					'For Sale' => 'for-sale',
+					'For Rent' => 'for-lease',
+					'Retail' => 3,
 				);
 
 	$options = '';
@@ -58,42 +55,6 @@ function get_category_options($select) {
 	return $options;
 }
 
-/**
- *
- * Getting Select Options for Property Types
- *
- */
-
-function get_status_options($select) {
-
-	$status = array(  
-				'Choose A Property Status' => '',
-				'For Sale' => 'for-sale',
-				'For Rent' => 'for-lease',
-			);
-
-	$status_options = '';
-
-	echo $select;
-
-	while (list($key, $value) = each($status)) {
-
-		if ($select == $value) {
-	
-			$status_options .= '<option value="' . $value . '" selected >' . $key . '</option>';
-
-		} else {
-			
-			$status_options .= '<option value="' . $value . '">' . $key . '</option>';
-
-		}
-
-	}
-
-	return $status_options;
-}
-
-
 
 /**
  *
@@ -106,16 +67,9 @@ function cg_googlemap_category_listing($atts) {
 if (isset($_POST['categories'])) {
 
 	$list_status = $_POST['categories'];
-	$taxonomy_name = $_POST['categories_taxonomy'];
 
 }	
 
-if (isset($_POST['status'])) {
-
-	$list_status = $_POST['status'];
-	$taxonomy_name = $_POST['status_taxonomy'];
-
-}	
 
 
 	$atts = shortcode_atts( 
@@ -132,27 +86,17 @@ if (isset($_POST['status'])) {
 
 	ob_start(); // OUTPUT BUFFERING
 
-if (!isset($_POST['categories']) && !isset($_POST['status']) ) {
-	
-	$args = array(
-	    'post_type' => $post_name,
-	    'posts_per_page' => $post_number,
-	);
-
-} else {
-
 	$args = array(
 	    'post_type' => $post_name,
 	    'tax_query' => array(
 	        array (
-	            'taxonomy' => $taxonomy_name,
+	            'taxonomy' => 'listing-status',
 	            'field' => 'slug',
 	            'terms' => $list_status,
 	        )
 	    ),
 	    'posts_per_page' => $post_number
 	);	
-}
 
 	$front_page_post_items = new WP_Query($args);
 
@@ -164,42 +108,22 @@ if (!isset($_POST['categories']) && !isset($_POST['status']) ) {
 
 	<?php 
 
-		if (isset($_POST['status'])) {
-
-			$selected = $_POST['status'];
-			echo $selected  . "<br>";
-			echo $taxonomy_name;
-		}
-
 		if (isset($_POST['categories'])) {
 
 			$selected = $_POST['categories'];
-			echo $selected  . "<br>";
-			echo $taxonomy_name;
-		}		
+			echo $selected;
+		}	
 
 	?> 
-	<!-- SELECT CATEGORY FORM -->
-	<form action="" method="POST" target="_self">
+	<!-- SELECT CATEGORY FORM 1 -->
+	<form action="/test" method="POST" target="_self">
+	<!-- <form action="<?php //echo $_SERVER['PHP_SELF']; ?>" method="POST" target="_self"> -->
 		
 		<select name="categories" onchange="this.form.submit()">
-			<?php echo get_category_options($selected); ?>
+			<?php echo get_options($selected); ?>
 		</select>
-
-		<input type="hidden" name="categories_taxonomy" value="property-type">
 
 	</form>    
-
-	<!-- SELECT STATUS FORM -->
-	<form action="" method="POST" target="_self">
-		
-		<select name="status" onchange="this.form.submit()">
-			<?php echo get_status_options($selected); ?>
-		</select>
-		
-		<input type="hidden" name="status_taxonomy" value="listing-status">
-
-	</form>    	
 
 
 

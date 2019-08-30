@@ -26,37 +26,36 @@ if ( !function_exists( 'add_action' ) ) {
  */
 $selected = '';
 
-function get_category_options($select) {
+// function get_category_options($select) {
 
-	$categories = array(  
-					'Choose A Property Type' => '',
-					'Retail' => 'retail',
-					'Office' => 'office',
-					'Land' => 'land',
-					'Industrial' => 'industrial',
-					'Development' => 'development',
-				);
+// 	$categories = array(  
+// 					'Retail' => 'retail',
+// 					'Office' => 'office',
+// 					'Land' => 'land',
+// 					'Industrial' => 'industrial',
+// 					'Development' => 'development',
+// 				);
 
-	$options = '';
+// 	$options = '';
 
-	echo $select;
+// 	echo $select;
 
-	while (list($key, $value) = each($categories)) {
+// 	while (list($key, $value) = each($categories)) {
 
-		if ($select == $value) {
+// 		if ($select == $value) {
 	
-			$options .= '<option value="' . $value . '" selected >' . $key . '</option>';
+// 			$options .= '<option value="' . $value . '" selected >' . $key . '</option>';
 
-		} else {
+// 		} else {
 			
-			$options .= '<option value="' . $value . '">' . $key . '</option>';
+// 			$options .= '<option value="' . $value . '">' . $key . '</option>';
 
-		}
+// 		}
 
-	}
+// 	}
 
-	return $options;
-}
+// 	return $options;
+// }
 
 /**
  *
@@ -67,7 +66,6 @@ function get_category_options($select) {
 function get_status_options($select) {
 
 	$status = array(  
-				'Choose A Property Status' => '',
 				'For Sale' => 'for-sale',
 				'For Rent' => 'for-lease',
 			);
@@ -103,19 +101,13 @@ function get_status_options($select) {
 
 function cg_googlemap_category_listing($atts) {
 
-if (isset($_POST['categories'])) {
-
-	$list_status = $_POST['categories'];
-	$taxonomy_name = $_POST['categories_taxonomy'];
-
-}	
-
 if (isset($_POST['status'])) {
 
 	$list_status = $_POST['status'];
-	$taxonomy_name = $_POST['status_taxonomy'];
+	$status_taxonomy = $_POST['status_taxonomy'];
 
 }	
+
 
 
 	$atts = shortcode_atts( 
@@ -132,27 +124,17 @@ if (isset($_POST['status'])) {
 
 	ob_start(); // OUTPUT BUFFERING
 
-if (!isset($_POST['categories']) && !isset($_POST['status']) ) {
-	
-	$args = array(
-	    'post_type' => $post_name,
-	    'posts_per_page' => $post_number,
-	);
-
-} else {
-
 	$args = array(
 	    'post_type' => $post_name,
 	    'tax_query' => array(
 	        array (
-	            'taxonomy' => $taxonomy_name,
+	            'taxonomy' => $status_taxonomy,
 	            'field' => 'slug',
 	            'terms' => $list_status,
 	        )
 	    ),
 	    'posts_per_page' => $post_number
 	);	
-}
 
 	$front_page_post_items = new WP_Query($args);
 
@@ -168,27 +150,18 @@ if (!isset($_POST['categories']) && !isset($_POST['status']) ) {
 
 			$selected = $_POST['status'];
 			echo $selected  . "<br>";
-			echo $taxonomy_name;
-		}
-
-		if (isset($_POST['categories'])) {
-
-			$selected = $_POST['categories'];
-			echo $selected  . "<br>";
-			echo $taxonomy_name;
-		}		
+			echo $status_taxonomy;
+		}	
 
 	?> 
 	<!-- SELECT CATEGORY FORM -->
-	<form action="" method="POST" target="_self">
+	<!-- <form action="" method="POST" target="_self">
 		
 		<select name="categories" onchange="this.form.submit()">
-			<?php echo get_category_options($selected); ?>
+			<?php //echo get_category_options($selected); ?>
 		</select>
 
-		<input type="hidden" name="categories_taxonomy" value="property-type">
-
-	</form>    
+	</form>     -->
 
 	<!-- SELECT STATUS FORM -->
 	<form action="" method="POST" target="_self">

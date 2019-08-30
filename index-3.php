@@ -132,15 +132,6 @@ if (isset($_POST['status'])) {
 
 	ob_start(); // OUTPUT BUFFERING
 
-if (!isset($_POST['categories']) && !isset($_POST['status']) ) {
-	
-	$args = array(
-	    'post_type' => $post_name,
-	    'posts_per_page' => $post_number,
-	);
-
-} else {
-
 	$args = array(
 	    'post_type' => $post_name,
 	    'tax_query' => array(
@@ -152,7 +143,6 @@ if (!isset($_POST['categories']) && !isset($_POST['status']) ) {
 	    ),
 	    'posts_per_page' => $post_number
 	);	
-}
 
 	$front_page_post_items = new WP_Query($args);
 
